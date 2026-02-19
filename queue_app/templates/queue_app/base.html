@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barber Queue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'queue_app/css/style.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">Barber Queue System</div>
+
+        <!-- Hamburger button (mobile only) -->
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="{% url 'register' %}">Register Customer</a>
+            <a href="{% url 'queue_list' %}">Queue List</a>
+            {% if request.user.is_authenticated %}
+            <span class="nav-user">👤 {{ request.user.username }}</span>
+            <form method="post" action="{% url 'barber_logout' %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="nav-logout-btn">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'barber_login' %}" class="nav-login">Barber Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        const toggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+    </script>
+</body>
+
+</html>

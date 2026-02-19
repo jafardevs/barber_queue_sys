@@ -1,0 +1,28 @@
+{% extends 'queue_app/base.html' %}
+
+{% block content %}
+<div class="text-center">
+    <h2>Barber Login</h2>
+    <p style="color: #777; margin-top: -10px; margin-bottom: 24px;">Sign in to manage your queue</p>
+</div>
+
+{% if form.errors %}
+<div class="alert-error">
+    Your username or password was incorrect. Please try again.
+</div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <label for="id_username">Username:</label>
+    <input type="text" id="id_username" name="username" required autofocus placeholder="Enter your username">
+
+    <label for="id_password">Password:</label>
+    <input type="password" id="id_password" name="password" required placeholder="Enter your password">
+
+    <div class="text-center">
+        <button type="submit" class="btn">Login</button>
+    </div>
+</form>
+{% endblock %}

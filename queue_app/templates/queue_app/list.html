@@ -1,0 +1,71 @@
+{% extends 'queue_app/base.html' %}
+
+{% block content %}
+<div class="text-center">
+    <h2>Queue List</h2>
+</div>
+
+<!-- DESKTOP TABLE -->
+<div class="table-wrapper desktop-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Status</th>
+                {% if request.user.is_authenticated %}
+                <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr class="{% if customer.is_finished %}finished{% else %}in-queue{% endif %}">
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>
+                    {% if customer.is_finished %}
+                    <span class="badge badge-finished">Finished</span>
+                    {% else %}
+                    <span class="badge badge-queue">In Queue</span>
+                    {% endif %}
+                </td>
+                {% if request.user.is_authenticated %}
+                <td>
+                    {% if not customer.is_finished %}
+                    <form method="post" action="{% url 'finish_customer' customer.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-finish">Finish</button>
+                    </form>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- MOBILE CARDS -->
+<div class="mobile-card">
+    {% for customer in customers %}
+    <div class="queue-card {% if customer.is_finished %}finished{% endif %}">
+        <div class="card-name">{{ customer.name }}</div>
+        <div class="card-phone">📞 {{ customer.phone }}</div>
+        <div class="card-footer">
+            {% if customer.is_finished %}
+            <span class="badge badge-finished">Finished</span>
+            {% else %}
+            <span class="badge badge-queue">In Queue</span>
+            {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'finish_customer' customer.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-finish">Finish</button>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
